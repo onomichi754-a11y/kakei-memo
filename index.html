@@ -57,12 +57,12 @@ var PLANS = [
   { id: "retire",  label: "老後",           hint: "例）年金だけで暮らせるのか知りたい" }
 ];
 
-/* ---------- ここを書き換える：③LINE ----------
-   oaId は LINE公式アカウントのID（@から書く）。url は友だち追加URL。   */
-var LINE = {
-  button: "LINEで送る",
-  oaId:   "@376svqbu",
-  url:    "https://lin.ee/R4DYqnw"
+/* ---------- ここを書き換える：③送り先のメール ----------
+   to は受け取るメールアドレス。subject はメールの件名。              */
+var MAIL = {
+  button:  "メールで送る",
+  to:      "yukiko754@gmail.com",
+  subject: "わが家のお金メモ"
 };
 
 /* ===================== ここから下は触らない ===================== */
@@ -145,7 +145,7 @@ textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 4px var(-
 .nav{display:flex;gap:10px;margin:22px 0 0}
 .btn{font:inherit;font-size:19px;font-weight:900;padding:14px 18px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--navy);cursor:pointer;flex:1;text-align:center;text-decoration:none;display:block;line-height:1.4}
 .btn.main{background:var(--green);border-color:var(--green);color:var(--onfill);flex:2}
-.btn.line{background:var(--line-g);border-color:var(--line-g);color:#fff;width:100%}
+.btn.mail{background:var(--gold);border-color:var(--gold);color:#fff;width:100%}
 
 /* まとめ */
 .sum{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:8px 18px 14px}
@@ -191,14 +191,14 @@ footer{text-align:center;font-size:14px;color:var(--sub);margin-top:30px}
   <div id="steps"></div>
 
   <section class="step" id="sDone">
-    <div class="head"><div class="ico" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="100%" height="100%" aria-hidden="true" focusable="false"><g stroke="#5A3A22" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"><line x1="196" y1="148" x2="226" y2="96" fill="none"/><path d="M226 74 L231 87 L238 88 L232 95 L234 104 L226 99 L218 104 L220 95 L214 88 L221 87 Z" fill="#F4B942" stroke-width="3"/></g><g stroke="#5A3A22" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="120" cy="175" rx="78" ry="50" fill="#C08F5E"/><ellipse cx="120" cy="187" rx="46" ry="32" fill="#E2BE92" stroke="none"/><ellipse cx="85" cy="222" rx="16" ry="8" fill="#7A4F30"/><ellipse cx="155" cy="222" rx="16" ry="8" fill="#7A4F30"/><ellipse cx="96" cy="172" rx="11" ry="8" fill="#9A6A44"/><ellipse cx="196" cy="150" rx="11" ry="9" fill="#9A6A44"/><ellipse cx="72" cy="52" rx="10" ry="9" fill="#8C5E3C"/><ellipse cx="168" cy="52" rx="10" ry="9" fill="#8C5E3C"/><rect x="52" y="45" width="136" height="112" rx="52" fill="#C08F5E"/><path d="M112 47 Q115 35 120 44 Q125 33 128 47" fill="none"/><rect x="72" y="94" width="96" height="58" rx="29" fill="#A87850" stroke="none"/></g><ellipse cx="106" cy="112" rx="5" ry="3.5" fill="#3B2414"/><ellipse cx="134" cy="112" rx="5" ry="3.5" fill="#3B2414"/><path d="M109 126 Q120 142 131 126 Z" fill="#E8837B" stroke="#3B2414" stroke-width="3" stroke-linejoin="round"/><circle cx="90" cy="86" r="6.5" fill="#2B1A0E"/><circle cx="150" cy="86" r="6.5" fill="#2B1A0E"/><circle cx="92.5" cy="83.5" r="2.2" fill="#fff"/><circle cx="152.5" cy="83.5" r="2.2" fill="#fff"/><ellipse cx="68" cy="112" rx="9" ry="6" fill="#F2A7A0" opacity="0.85"/><ellipse cx="172" cy="112" rx="9" ry="6" fill="#F2A7A0" opacity="0.85"/></svg></div><div><h2>内容を確かめる</h2><p>このとおりでよければ、LINEで送ってください。直したいときは「もどる」で戻れます。</p></div></div>
+    <div class="head"><div class="ico" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="100%" height="100%" aria-hidden="true" focusable="false"><g stroke="#5A3A22" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"><line x1="196" y1="148" x2="226" y2="96" fill="none"/><path d="M226 74 L231 87 L238 88 L232 95 L234 104 L226 99 L218 104 L220 95 L214 88 L221 87 Z" fill="#F4B942" stroke-width="3"/></g><g stroke="#5A3A22" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="120" cy="175" rx="78" ry="50" fill="#C08F5E"/><ellipse cx="120" cy="187" rx="46" ry="32" fill="#E2BE92" stroke="none"/><ellipse cx="85" cy="222" rx="16" ry="8" fill="#7A4F30"/><ellipse cx="155" cy="222" rx="16" ry="8" fill="#7A4F30"/><ellipse cx="96" cy="172" rx="11" ry="8" fill="#9A6A44"/><ellipse cx="196" cy="150" rx="11" ry="9" fill="#9A6A44"/><ellipse cx="72" cy="52" rx="10" ry="9" fill="#8C5E3C"/><ellipse cx="168" cy="52" rx="10" ry="9" fill="#8C5E3C"/><rect x="52" y="45" width="136" height="112" rx="52" fill="#C08F5E"/><path d="M112 47 Q115 35 120 44 Q125 33 128 47" fill="none"/><rect x="72" y="94" width="96" height="58" rx="29" fill="#A87850" stroke="none"/></g><ellipse cx="106" cy="112" rx="5" ry="3.5" fill="#3B2414"/><ellipse cx="134" cy="112" rx="5" ry="3.5" fill="#3B2414"/><path d="M109 126 Q120 142 131 126 Z" fill="#E8837B" stroke="#3B2414" stroke-width="3" stroke-linejoin="round"/><circle cx="90" cy="86" r="6.5" fill="#2B1A0E"/><circle cx="150" cy="86" r="6.5" fill="#2B1A0E"/><circle cx="92.5" cy="83.5" r="2.2" fill="#fff"/><circle cx="152.5" cy="83.5" r="2.2" fill="#fff"/><ellipse cx="68" cy="112" rx="9" ry="6" fill="#F2A7A0" opacity="0.85"/><ellipse cx="172" cy="112" rx="9" ry="6" fill="#F2A7A0" opacity="0.85"/></svg></div><div><h2>内容を確かめる</h2><p>このとおりでよければ、メールで送ってください。直したいときは「もどる」で戻れます。</p></div></div>
     <div class="kapi"><div class="pic"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="100%" height="100%" aria-hidden="true" focusable="false"><g fill="none" stroke="#C9A27C" stroke-width="4" stroke-linecap="round"><path d="M34 70 Q26 82 34 94"/><path d="M22 62 Q10 82 22 102"/><path d="M206 70 Q214 82 206 94"/><path d="M218 62 Q230 82 218 102"/></g><g stroke="#5A3A22" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="120" cy="178" rx="78" ry="48" fill="#C08F5E"/><ellipse cx="120" cy="192" rx="46" ry="28" fill="#E2BE92" stroke="none"/><ellipse cx="85" cy="222" rx="16" ry="8" fill="#7A4F30"/><ellipse cx="155" cy="222" rx="16" ry="8" fill="#7A4F30"/><g transform="translate(120 112) scale(0.96 0.9) translate(-120 -80)"><ellipse cx="78" cy="42" rx="11" ry="9" fill="#8C5E3C"/><ellipse cx="162" cy="42" rx="11" ry="9" fill="#8C5E3C"/><rect x="52" y="30" width="136" height="118" rx="54" fill="#C08F5E"/><path d="M104 33 Q110 18 118 31 Q124 16 132 33" fill="none"/><rect x="74" y="98" width="92" height="52" rx="26" fill="#A87850" stroke="none"/></g><ellipse cx="108" cy="205" rx="11" ry="8" fill="#9A6A44"/><ellipse cx="132" cy="205" rx="11" ry="8" fill="#9A6A44"/></g><g fill="none" stroke="#2B1A0E" stroke-width="4" stroke-linecap="round"><path d="M82 102 Q90 108 98 102"/><path d="M142 102 Q150 108 158 102"/></g><ellipse cx="107" cy="128" rx="5" ry="3.5" fill="#3B2414"/><ellipse cx="133" cy="128" rx="5" ry="3.5" fill="#3B2414"/><path d="M110 141 Q115 147 120 142 Q125 147 130 141" fill="none" stroke="#3B2414" stroke-width="3" stroke-linecap="round"/><ellipse cx="70" cy="122" rx="9" ry="6" fill="#F2A7A0" opacity="0.85"/><ellipse cx="170" cy="122" rx="9" ry="6" fill="#F2A7A0" opacity="0.85"/></svg></div><p class="say"><small>カピまる</small>入れてくださって、ありがとうございます。届いた数字をもとに、いっしょに考えますね。</p></div>
     <div class="sum" id="sum"></div>
-    <div class="nav" style="margin-top:18px"><a class="btn line" id="lineBtn" href="#" target="_blank" rel="noopener"></a></div>
-    <div class="ok" id="copied" hidden>文をコピーしました。<br>LINEが開いたら、文が入っているのを確かめて送信してください。入っていなければ、入力欄を長押しして「ペースト」を選んでください。</div>
-    <p class="note">うまく開かないときは、<a id="addLink" href="#" target="_blank" rel="noopener">こちらから友だち追加</a>してから、もう一度ボタンを押してください。</p>
+    <div class="nav" style="margin-top:18px"><a class="btn mail" id="mailBtn" href="#"></a></div>
+    <div class="ok" id="copied" hidden>メールの画面が開いたら、宛先と本文が入っているのを確かめて「送信」を押してください。<br>本文が空のときは、本文の欄を長押しして「ペースト」を選んでください（文はコピーしてあります）。</div>
+    <p class="note">メールの画面が開かないときは、下の「送る文を見る・コピーする」で文をコピーし、<b id="mailTo"></b> あてにお送りください。</p>
     <details><summary>送る文を見る・コピーする</summary><div class="raw" id="raw"></div><button class="link" type="button" id="copyBtn">文だけをコピーする</button></details>
-    <p class="note">入れた数字は、このページにもサーバーにも保存されません。LINEで送った内容だけが届きます。数字は目安で大丈夫です。</p>
+    <p class="note">入れた数字は、このページにもサーバーにも保存されません。メールで送った内容だけが届きます。数字は目安で大丈夫です。</p>
     <div class="nav"><button class="btn" type="button" id="backDone">もどる</button></div>
   </section>
 
@@ -368,9 +368,9 @@ var KAPI={"nikkori":"<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 240
     var text=L.join('\n');
     $('sum').innerHTML=html;
     $('raw').textContent=text;
-    $('lineBtn').textContent=LINE.button;
-    $('lineBtn').href = LINE.oaId ? 'https://line.me/R/oaMessage/'+encodeURIComponent(LINE.oaId)+'/?'+encodeURIComponent(text) : LINE.url;
-    $('addLink').href=LINE.url;
+    $('mailBtn').textContent=MAIL.button;
+    $('mailBtn').href='mailto:'+MAIL.to+'?subject='+encodeURIComponent(MAIL.subject+(duo?'（2人分）':''))+'&body='+encodeURIComponent(text);
+    $('mailTo').textContent=MAIL.to;
     $('copied').hidden=true;
     go(N-1);
   }
@@ -392,7 +392,7 @@ var KAPI={"nikkori":"<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 240
   $('soloBtn').onclick=function(){ start(false); };
   $('duoBtn').onclick=function(){ start(true); };
   $('backDone').onclick=function(){ go(N-2); };
-  $('lineBtn').onclick=function(){ copy($('raw').textContent); };
+  $('mailBtn').onclick=function(){ copy($('raw').textContent); };
   $('copyBtn').onclick=function(){ copy($('raw').textContent); };
   window.addEventListener('beforeunload',function(e){ if(touched){ e.preventDefault(); e.returnValue=''; } });
   go(0);
