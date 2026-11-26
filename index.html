@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>わが家のお金メモ</title>
-<meta name="description" content="ボタンで選ぶだけ。わからない所は「あとで」で大丈夫です。入れた数字はどこにも保存されません。">
+<meta name="description" content="ボタンで選ぶだけ。わからない所は「あとで」で大丈夫です。入れた数字は、このページには残りません。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="わが家のお金メモ">
-<meta property="og:description" content="ボタンで選ぶだけ。わからない所は「あとで」で大丈夫です。入れた数字はどこにも保存されません。">
+<meta property="og:description" content="ボタンで選ぶだけ。わからない所は「あとで」で大丈夫です。入れた数字は、このページには残りません。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
 <script>
@@ -57,12 +57,13 @@ var PLANS = [
   { id: "retire",  label: "老後",           hint: "例）年金だけで暮らせるのか知りたい" }
 ];
 
-/* ---------- ここを書き換える：③送り先のメール ----------
-   to は受け取るメールアドレス。subject はメールの件名。              */
-var MAIL = {
-  button:  "送信",
-  to:      "yukiko754@gmail.com",
-  subject: "わが家のお金メモ"
+/* ---------- ここを書き換える：③送信 ----------
+   url は Google Apps Script の「ウェブアプリ」のURL（/exec で終わるもの）。
+   fallback は、送れなかったときにお客さまへ案内するメールアドレス。     */
+var SEND = {
+  button:   "送信",
+  url:      "https://script.google.com/macros/s/AKfycbw5ZgIOU9fbF4NXjxHuM9NUlBoN_HvTsqBfFvUqF7wWAJu-L0WiUTOXnMwCvVytJvI6/exec",
+  fallback: "onomichi754@gmail.com"
 };
 
 /* ===================== ここから下は触らない ===================== */
@@ -129,6 +130,11 @@ body{background:var(--paper) radial-gradient(var(--dot) 1.6px,transparent 1.6px)
 .chips button.sel{background:var(--green);border-color:var(--green);color:var(--onfill)}
 .chips button.na{border-style:dashed;color:var(--sub)}
 .chips button.na.sel{background:var(--gold-l);border:2px solid var(--gold);color:#3A2A00}
+.nm{font:inherit;font-size:20px;font-weight:700;width:100%;padding:10px 14px;border:2px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);display:block}
+.nm:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 4px var(--soft)}
+.nm.bad{border-color:#D9534F;background:#FFF0EE}
+.nmErr{color:#C0392B;font-size:15px;font-weight:700;margin:6px 0 0 42px}
+@media (max-width:480px){.nmErr{margin-left:0}}
 textarea{font:inherit;font-size:17px;width:100%;min-height:96px;border:2px solid var(--line);border-radius:14px;padding:10px 12px;background:var(--paper);color:var(--ink);resize:vertical;line-height:1.6;display:block}
 textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 4px var(--soft)}
 .tcols{display:grid;gap:10px;margin-top:8px}
@@ -146,6 +152,9 @@ textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 4px var(-
 .btn{font:inherit;font-size:19px;font-weight:900;padding:14px 18px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--navy);cursor:pointer;flex:1;text-align:center;text-decoration:none;display:block;line-height:1.4}
 .btn.main{background:var(--green);border-color:var(--green);color:var(--onfill);flex:2}
 .btn.mail{background:var(--gold);border-color:var(--gold);color:#fff;width:100%}
+.btn.mail:disabled{opacity:.6;cursor:wait}
+.ok.done{background:var(--soft);border-color:var(--green);font-size:17px;font-weight:700;text-align:center}
+.ok.err{background:#FFF0EE;border-color:#D9534F}
 
 /* まとめ */
 .sum{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:8px 18px 14px}
@@ -178,10 +187,16 @@ footer{text-align:center;font-size:14px;color:var(--sub);margin-top:30px}
     <div class="head"><div class="ico" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="100%" height="100%" aria-hidden="true" focusable="false"><g stroke="#5A3A22" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="120" cy="175" rx="78" ry="50" fill="#C08F5E"/><ellipse cx="120" cy="187" rx="46" ry="32" fill="#E2BE92" stroke="none"/><ellipse cx="85" cy="222" rx="16" ry="8" fill="#7A4F30"/><ellipse cx="155" cy="222" rx="16" ry="8" fill="#7A4F30"/><ellipse cx="96" cy="172" rx="11" ry="8" fill="#9A6A44"/><ellipse cx="144" cy="172" rx="11" ry="8" fill="#9A6A44"/><ellipse cx="72" cy="52" rx="10" ry="9" fill="#8C5E3C"/><ellipse cx="168" cy="52" rx="10" ry="9" fill="#8C5E3C"/><rect x="52" y="45" width="136" height="112" rx="52" fill="#C08F5E"/><path d="M112 47 Q115 35 120 44 Q125 33 128 47" fill="none"/><rect x="72" y="94" width="96" height="58" rx="29" fill="#A87850" stroke="none"/></g><ellipse cx="106" cy="112" rx="5" ry="3.5" fill="#3B2414"/><ellipse cx="134" cy="112" rx="5" ry="3.5" fill="#3B2414"/><path d="M108 128 Q114 136 120 129 Q126 136 132 128" fill="none" stroke="#3B2414" stroke-width="3" stroke-linecap="round"/><circle cx="90" cy="86" r="6.5" fill="#2B1A0E"/><circle cx="150" cy="86" r="6.5" fill="#2B1A0E"/><circle cx="92.5" cy="83.5" r="2.2" fill="#fff"/><circle cx="152.5" cy="83.5" r="2.2" fill="#fff"/><ellipse cx="68" cy="112" rx="9" ry="6" fill="#F2A7A0" opacity="0.85"/><ellipse cx="172" cy="112" rx="9" ry="6" fill="#F2A7A0" opacity="0.85"/></svg></div><div><span class="who" id="who"></span><h1 id="ttl"></h1><p>ボタンで選ぶだけ。わからない所は「あとで」で大丈夫です。3分ほどで終わります。</p></div></div>
     <div class="kapi"><div class="pic"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="100%" height="100%" aria-hidden="true" focusable="false"><g stroke="#5A3A22" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"><line x1="196" y1="148" x2="226" y2="96" fill="none"/><path d="M226 74 L231 87 L238 88 L232 95 L234 104 L226 99 L218 104 L220 95 L214 88 L221 87 Z" fill="#F4B942" stroke-width="3"/></g><g stroke="#5A3A22" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="120" cy="175" rx="78" ry="50" fill="#C08F5E"/><ellipse cx="120" cy="187" rx="46" ry="32" fill="#E2BE92" stroke="none"/><ellipse cx="85" cy="222" rx="16" ry="8" fill="#7A4F30"/><ellipse cx="155" cy="222" rx="16" ry="8" fill="#7A4F30"/><ellipse cx="96" cy="172" rx="11" ry="8" fill="#9A6A44"/><ellipse cx="196" cy="150" rx="11" ry="9" fill="#9A6A44"/><ellipse cx="72" cy="52" rx="10" ry="9" fill="#8C5E3C"/><ellipse cx="168" cy="52" rx="10" ry="9" fill="#8C5E3C"/><rect x="52" y="45" width="136" height="112" rx="52" fill="#C08F5E"/><path d="M112 47 Q115 35 120 44 Q125 33 128 47" fill="none"/><rect x="72" y="94" width="96" height="58" rx="29" fill="#A87850" stroke="none"/></g><ellipse cx="106" cy="112" rx="5" ry="3.5" fill="#3B2414"/><ellipse cx="134" cy="112" rx="5" ry="3.5" fill="#3B2414"/><path d="M109 126 Q120 142 131 126 Z" fill="#E8837B" stroke="#3B2414" stroke-width="3" stroke-linejoin="round"/><circle cx="90" cy="86" r="6.5" fill="#2B1A0E"/><circle cx="150" cy="86" r="6.5" fill="#2B1A0E"/><circle cx="92.5" cy="83.5" r="2.2" fill="#fff"/><circle cx="152.5" cy="83.5" r="2.2" fill="#fff"/><ellipse cx="68" cy="112" rx="9" ry="6" fill="#F2A7A0" opacity="0.85"/><ellipse cx="172" cy="112" rx="9" ry="6" fill="#F2A7A0" opacity="0.85"/></svg></div><p class="say"><small>カピまる</small>だいじょうぶ、ひとつずつ見ていきましょう。だいたいの数字で十分です。</p></div>
     <div class="safe">
-      <p>🔒 入れた数字は、このページにもサーバーにも保存されません。ページを閉じると消えます。</p>
+      <p>🔒 「送信」を押すと、入れた内容が <span class="ownerName"></span> のメールにだけ届きます。このページには残りません。</p>
+    </div>
+    <div class="q">
+      <div class="t"><span class="no">1</span><label for="nameIn">お名前</label></div>
+      <div class="hint">ご夫婦で入れるときは、どちらかお1人のお名前で大丈夫です。</div>
+      <div class="cols"><input id="nameIn" class="nm" type="text" autocomplete="name" maxlength="40" placeholder="例）山田 花子"></div>
+      <p class="nmErr" id="nameErr" hidden role="alert">お名前を入れてください。</p>
     </div>
     <div class="q" style="padding-bottom:8px">
-      <div class="t"><span class="no">?</span>どなたの分を入れますか？</div>
+      <div class="t"><span class="no">2</span>どなたの分を入れますか？</div>
       <button class="mode" type="button" id="soloBtn">1人分を入れる<small>自分の分だけ</small></button>
       <button class="mode" type="button" id="duoBtn">2人分を並べて入れる<small>ご夫婦など。2人の数字を横に並べて入れます</small></button>
     </div>
@@ -193,11 +208,11 @@ footer{text-align:center;font-size:14px;color:var(--sub);margin-top:30px}
     <div class="head"><div class="ico" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="100%" height="100%" aria-hidden="true" focusable="false"><g stroke="#5A3A22" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"><line x1="196" y1="148" x2="226" y2="96" fill="none"/><path d="M226 74 L231 87 L238 88 L232 95 L234 104 L226 99 L218 104 L220 95 L214 88 L221 87 Z" fill="#F4B942" stroke-width="3"/></g><g stroke="#5A3A22" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="120" cy="175" rx="78" ry="50" fill="#C08F5E"/><ellipse cx="120" cy="187" rx="46" ry="32" fill="#E2BE92" stroke="none"/><ellipse cx="85" cy="222" rx="16" ry="8" fill="#7A4F30"/><ellipse cx="155" cy="222" rx="16" ry="8" fill="#7A4F30"/><ellipse cx="96" cy="172" rx="11" ry="8" fill="#9A6A44"/><ellipse cx="196" cy="150" rx="11" ry="9" fill="#9A6A44"/><ellipse cx="72" cy="52" rx="10" ry="9" fill="#8C5E3C"/><ellipse cx="168" cy="52" rx="10" ry="9" fill="#8C5E3C"/><rect x="52" y="45" width="136" height="112" rx="52" fill="#C08F5E"/><path d="M112 47 Q115 35 120 44 Q125 33 128 47" fill="none"/><rect x="72" y="94" width="96" height="58" rx="29" fill="#A87850" stroke="none"/></g><ellipse cx="106" cy="112" rx="5" ry="3.5" fill="#3B2414"/><ellipse cx="134" cy="112" rx="5" ry="3.5" fill="#3B2414"/><path d="M109 126 Q120 142 131 126 Z" fill="#E8837B" stroke="#3B2414" stroke-width="3" stroke-linejoin="round"/><circle cx="90" cy="86" r="6.5" fill="#2B1A0E"/><circle cx="150" cy="86" r="6.5" fill="#2B1A0E"/><circle cx="92.5" cy="83.5" r="2.2" fill="#fff"/><circle cx="152.5" cy="83.5" r="2.2" fill="#fff"/><ellipse cx="68" cy="112" rx="9" ry="6" fill="#F2A7A0" opacity="0.85"/><ellipse cx="172" cy="112" rx="9" ry="6" fill="#F2A7A0" opacity="0.85"/></svg></div><div><h2>内容を確かめる</h2><p>このとおりでよければ、「送信」を押してください。直したいときは「もどる」で戻れます。</p></div></div>
     <div class="kapi"><div class="pic"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="100%" height="100%" aria-hidden="true" focusable="false"><g fill="none" stroke="#C9A27C" stroke-width="4" stroke-linecap="round"><path d="M34 70 Q26 82 34 94"/><path d="M22 62 Q10 82 22 102"/><path d="M206 70 Q214 82 206 94"/><path d="M218 62 Q230 82 218 102"/></g><g stroke="#5A3A22" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="120" cy="178" rx="78" ry="48" fill="#C08F5E"/><ellipse cx="120" cy="192" rx="46" ry="28" fill="#E2BE92" stroke="none"/><ellipse cx="85" cy="222" rx="16" ry="8" fill="#7A4F30"/><ellipse cx="155" cy="222" rx="16" ry="8" fill="#7A4F30"/><g transform="translate(120 112) scale(0.96 0.9) translate(-120 -80)"><ellipse cx="78" cy="42" rx="11" ry="9" fill="#8C5E3C"/><ellipse cx="162" cy="42" rx="11" ry="9" fill="#8C5E3C"/><rect x="52" y="30" width="136" height="118" rx="54" fill="#C08F5E"/><path d="M104 33 Q110 18 118 31 Q124 16 132 33" fill="none"/><rect x="74" y="98" width="92" height="52" rx="26" fill="#A87850" stroke="none"/></g><ellipse cx="108" cy="205" rx="11" ry="8" fill="#9A6A44"/><ellipse cx="132" cy="205" rx="11" ry="8" fill="#9A6A44"/></g><g fill="none" stroke="#2B1A0E" stroke-width="4" stroke-linecap="round"><path d="M82 102 Q90 108 98 102"/><path d="M142 102 Q150 108 158 102"/></g><ellipse cx="107" cy="128" rx="5" ry="3.5" fill="#3B2414"/><ellipse cx="133" cy="128" rx="5" ry="3.5" fill="#3B2414"/><path d="M110 141 Q115 147 120 142 Q125 147 130 141" fill="none" stroke="#3B2414" stroke-width="3" stroke-linecap="round"/><ellipse cx="70" cy="122" rx="9" ry="6" fill="#F2A7A0" opacity="0.85"/><ellipse cx="170" cy="122" rx="9" ry="6" fill="#F2A7A0" opacity="0.85"/></svg></div><p class="say"><small>カピまる</small>入れてくださって、ありがとうございます。届いた数字をもとに、いっしょに考えますね。</p></div>
     <div class="sum" id="sum"></div>
-    <div class="nav" style="margin-top:18px"><a class="btn mail" id="mailBtn" href="#"></a></div>
-    <div class="ok" id="copied" hidden>メールの画面が開きます。宛先と本文が入っているのを確かめて、メールの「送信」を押してください。<br>本文が空のときは、本文の欄を長押しして「ペースト」を選んでください（文はコピーしてあります）。</div>
-    <p class="note">メールの画面が開かないときは、下の「送る文を見る・コピーする」で文をコピーし、<b id="mailTo"></b> あてにお送りください。</p>
-    <details><summary>送る文を見る・コピーする</summary><div class="raw" id="raw"></div><button class="link" type="button" id="copyBtn">文だけをコピーする</button></details>
-    <p class="note">入れた数字は、このページにもサーバーにも保存されません。メールで送った内容だけが届きます。数字は目安で大丈夫です。</p>
+    <div class="nav" style="margin-top:18px"><button class="btn mail" type="button" id="sendBtn"></button></div>
+    <div class="ok done" id="sent" hidden role="status">送りました。ありがとうございました。<br>このページは閉じて大丈夫です。</div>
+    <div class="ok err" id="sendErr" hidden role="alert">送れませんでした。電波のよい所で、もう一度「送信」を押してください。<br>続けて送れないときは、下の「送る文を見る・コピーする」で文をコピーし、<b id="fbTo"></b> あてにメールでお送りください。</div>
+    <details><summary>送る文を見る・コピーする</summary><div class="raw" id="raw"></div><button class="link" type="button" id="copyBtn">文だけをコピーする</button><div class="ok" id="copied" hidden>文をコピーしました。</div></details>
+    <p class="note">送信した内容は、<span class="ownerName"></span> のメールにだけ届きます。このページには残りません。数字は目安で大丈夫です。</p>
     <div class="nav"><button class="btn" type="button" id="backDone">もどる</button></div>
   </section>
 
@@ -215,6 +230,7 @@ var KAPI={"nikkori":"<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 240
   $('who').textContent=OWNER.name+'｜'+OWNER.title;
   $('ttl').textContent=OWNER.pageTitle;
   $('fName').textContent=OWNER.name;
+  [].forEach.call(document.querySelectorAll('.ownerName'),function(e){e.textContent=OWNER.name});
 
   var STEPS=[
     {title:'毎月のお金', kapi:'dentaku', lead:'だいたいで大丈夫です。わからない所は「あとで」を押してください。', items:MONTHLY, kind:'money'},
@@ -224,7 +240,7 @@ var KAPI={"nikkori":"<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 240
   ];
   var LABELS=['はじめに'].concat(STEPS.map(function(s){return s.title})).concat(['内容を確かめる']);
   var N=LABELS.length;
-  var duo=false, data={}, touched=false, pos=0;
+  var duo=false, data={}, touched=false, pos=0, nm='';
   function people(){ return duo ? ['あなた','パートナー'] : ['あなた']; }
   function el(tag,cls,text){ var e=document.createElement(tag); if(cls)e.className=cls; if(text!=null)e.textContent=text; return e; }
 
@@ -337,8 +353,10 @@ var KAPI={"nikkori":"<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 240
   function finish(){
     var P=people(), L=[], html='';
     L.push('【'+OWNER.pageTitle+'】'+(duo?'（2人分）':''));
+    L.push('お名前：'+nm);
     if(duo) L.push('金額は「あなた／パートナー」の順です');
     var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+    html+='<div class="ln"><span>お名前</span><b class="wrap">'+esc(nm)+'</b></div>';
     STEPS.forEach(function(S){
       L.push(''); L.push('■ '+S.title);
       html+='<h3>'+esc(S.title)+'</h3>';
@@ -367,9 +385,12 @@ var KAPI={"nikkori":"<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 240
     var text=L.join('\n');
     $('sum').innerHTML=html;
     $('raw').textContent=text;
-    $('mailBtn').textContent=MAIL.button;
-    $('mailBtn').href='mailto:'+MAIL.to+'?subject='+encodeURIComponent(MAIL.subject+(duo?'（2人分）':''))+'&body='+encodeURIComponent(text);
-    $('mailTo').textContent=MAIL.to;
+    $('sendBtn').textContent=SEND.button;
+    $('sendBtn').disabled=false;
+    $('sendBtn').hidden=false;
+    $('sent').hidden=true;
+    $('sendErr').hidden=true;
+    $('fbTo').textContent=SEND.fallback;
     $('copied').hidden=true;
     go(N-1);
   }
@@ -384,14 +405,33 @@ var KAPI={"nikkori":"<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 240
     }catch(e){}
     try{ if(navigator.clipboard&&window.isSecureContext){ navigator.clipboard.writeText(text).catch(function(){}); ok=true; } }catch(e){}
     $('copied').hidden=false;
-    if(!ok) $('copied').textContent='コピーできませんでした。「送る文を見る」を開き、文を長押ししてコピーしてください。';
+    $('copied').textContent = ok ? '文をコピーしました。' : 'コピーできませんでした。文を長押ししてコピーしてください。';
   }
 
-  function start(two){ duo=two; data={}; touched=false; buildSteps(); go(1); }
+  function start(two){
+    nm=$('nameIn').value.replace(/\s+/g,' ').trim();
+    if(!nm){ $('nameErr').hidden=false; $('nameIn').classList.add('bad'); $('nameIn').focus(); return; }
+    duo=two; data={}; touched=true; buildSteps(); go(1);
+  }
+  $('nameIn').oninput=function(){ $('nameErr').hidden=true; $('nameIn').classList.remove('bad'); };
   $('soloBtn').onclick=function(){ start(false); };
   $('duoBtn').onclick=function(){ start(true); };
   $('backDone').onclick=function(){ go(N-2); };
-  $('mailBtn').onclick=function(){ copy($('raw').textContent); };
+  function send(){
+    var b=$('sendBtn');
+    b.disabled=true; b.textContent='送っています…';
+    $('sendErr').hidden=true;
+    function fail(){ b.disabled=false; b.textContent=SEND.button; $('sendErr').hidden=false; }
+    if(!SEND.url || !window.fetch){ fail(); return; }
+    fetch(SEND.url,{method:'POST',body:JSON.stringify({memo:$('raw').textContent,duo:duo,name:nm})})
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        if(!j||!j.ok){ fail(); return; }
+        b.hidden=true; $('sent').hidden=false; touched=false;
+      })
+      .catch(fail);
+  }
+  $('sendBtn').onclick=send;
   $('copyBtn').onclick=function(){ copy($('raw').textContent); };
   window.addEventListener('beforeunload',function(e){ if(touched){ e.preventDefault(); e.returnValue=''; } });
   go(0);
